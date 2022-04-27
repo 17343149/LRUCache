@@ -41,7 +41,7 @@ class LRUCache {
   LRUCache(size_t capacity = 100) : capacity_(capacity) {}
   ~LRUCache() = default;
 
-  template<typename U, typename V>
+  template <typename U, typename V>
   void put(U&& key, V&& res) {
     auto iter = mmap.find(key);
     if (iter != mmap.end()) {
@@ -58,10 +58,9 @@ class LRUCache {
   }
 
   // ! 返回指针
-  // 使用时应该在外面封装一层判断, 不应该让api调用者直接拿到指针
-  template<typename T>
+  // 使用时应该在外面封装一层判断, 不能让api调用者直接拿到指针
+  template <typename T>
   Value* get(T&& key) {
-    cout << __PRETTY_FUNCTION__ << endl;
     auto iter = mmap.find(std::forward<Key>(key));
     if (iter != mmap.end()) {
       mlist.splice(mlist.begin(), mlist, iter->second);
@@ -69,13 +68,6 @@ class LRUCache {
     }
     return nullptr;
   }
-
-  void RemoveTail() {
-    mmap.erase(mlist.back().k_);
-    mlist.pop_back();
-  }
-
-  size_t size() { return mmap.size(); }
 
   size_t capacity() { return capacity_; }
   void SetCapacity(size_t param) {
@@ -85,8 +77,15 @@ class LRUCache {
     }
   }
 
+ private:
+  void RemoveTail() {
+    mmap.erase(mlist.back().k_);
+    mlist.pop_back();
+  }
+
   size_t capacity_;
 
-  std::unordered_map<Key, typename std::list<CacheNode<Key, Value>>::iterator> mmap;
+  std::unordered_map<Key, typename std::list<CacheNode<Key, Value>>::iterator>
+      mmap;
   std::list<CacheNode<Key, Value>> mlist;
 };
